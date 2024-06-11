@@ -207,7 +207,7 @@ class Authenticate:
                         self.authentication_handler.execute_login(username=username)
                         self.cookie_handler.set_cookie()
         return (st.session_state['name'], st.session_state['authentication_status'],
-                st.session_state['username'])
+                st.session_state['username'], st.session_state['password'])
     def logout(self, button_name: str='Logout', location: str='main', key: Optional[str]=None):
         """
         Creates a logout button.
@@ -235,6 +235,11 @@ class Authenticate:
             if st.session_state['authentication_status']:
                 self.authentication_handler.execute_logout()
                 self.cookie_handler.delete_cookie()
+
+    def relogin(self):
+        self.authentication_handler.re_execute_logout()
+        self.cookie_handler.delete_cookie()
+
     def register_user(self, location: str='main', pre_authorization: bool=True,
                       domains: Optional[list]=None, fields: dict=None,
                       clear_on_submit: bool=False) -> tuple:

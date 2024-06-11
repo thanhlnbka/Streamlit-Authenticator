@@ -63,6 +63,8 @@ class AuthenticationHandler:
             st.session_state['username'] = None
         if 'logout' not in st.session_state:
             st.session_state['logout'] = None
+        if 'password' not in st.session_state:
+            st.session_state['password'] = None
     def check_credentials(self, username: str, password: str,
                           max_concurrent_users: Optional[int]=None,
                           max_login_attempts: Optional[int]=None) -> bool:
@@ -95,6 +97,7 @@ class AuthenticationHandler:
                     raise LoginError('Maximum number of login attempts exceeded')
             try:
                 if Hasher.check_pw(password, self.credentials['usernames'][username]['password']):
+                    st.session_state['password'] = password
                     return True
                 st.session_state['authentication_status'] = False
                 self._record_failed_login_attempts(username)
@@ -168,6 +171,13 @@ class AuthenticationHandler:
         st.session_state['name'] = None
         st.session_state['username'] = None
         st.session_state['authentication_status'] = None
+        
+    def re_execute_logout(self):
+        st.session_state['logout'] = True
+        st.session_state['name'] = None
+        st.session_state['username'] = None
+        st.session_state['authentication_status'] = None
+
     def forgot_password(self, username: str) -> tuple:
         """
         Creates a new random password for the user.
