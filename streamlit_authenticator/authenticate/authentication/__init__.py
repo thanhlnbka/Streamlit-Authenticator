@@ -159,9 +159,10 @@ class AuthenticationHandler:
             self.credentials['usernames'][username]['logged_in'] = True
         elif token:
             st.session_state['username'] = token['username']
-            st.session_state['name'] = self.credentials['usernames'][token['username']]['name']
-            st.session_state['authentication_status'] = True
-            self.credentials['usernames'][token['username']]['logged_in'] = True
+            if token['username'] in self.credentials['usernames']:
+                st.session_state['name'] = self.credentials['usernames'][token['username']]['name']
+                st.session_state['authentication_status'] = True
+                self.credentials['usernames'][token['username']]['logged_in'] = True
     def execute_logout(self):
         """
         Clears cookie and session state variables associated with the logged in user.
